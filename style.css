@@ -1,0 +1,99 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #1e1e1e; /* Dark background */
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.main {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.ids{
+    border: 10px solid wheat ;
+}
+#create{
+    background-color: transparent;
+    color: black;
+    border: none;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+#enterdid{
+    flex-grow: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    margin-right: 10px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+/* 
+input[type="text"]::placeholder {
+    color: #888;
+    font-weight: 500;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 8px #1dbf73;
+    border: 2px solid #1dbf73;
+}
+
+button {
+    background-color: #1dbf73;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #17a865; 
+    transform: scale(1.1);
+}
+
+button#sned i {
+    font-size: 18px;
+}
+
+button#sned {
+    width: 45px;
+    height: 45px;
+    padding: 0;
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #aaa;
+} */
