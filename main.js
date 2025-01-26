@@ -82,13 +82,16 @@
 
 //  }
 
-import { getIdFieldValue } from "./ID_Createform/form.js";
+import { getIdFieldValue } from "./form.js";
 
-setInterval(() => {
-    const idValue = getIdFieldValue();
-    if (idValue) {
-        console.log("ID from Form:", idValue); 
-    }
-}, 1000);
+document.addEventListener("DOMContentLoaded", () => {
+    // Call the function after the page load
+    setTimeout(() => {
+        const idValue = getIdFieldValue();  // Get the ID value after the click event
+        console.log("ID from Form:", idValue);
+    }, 1000);  // Delay to ensure the button has been clicked and the value is updated
+});
+
+
 
 
