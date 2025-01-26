@@ -81,9 +81,14 @@
 //   }
 
 //  }
+
 import { getIdFieldValue } from "./ID_Createform/form.js";
 
-document.getElementById("anotherBtn").addEventListener("click", () => {
+setInterval(() => {
     const idValue = getIdFieldValue();
-    console.log("Imported ID Value:", idValue);
-});
+    if (idValue) {
+        console.log("ID from Form:", idValue); 
+    }
+}, 1000);
+
+
