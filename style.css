@@ -15,26 +15,30 @@ body {
 .ids{
     display: flex;
     width: 99%;
+    /* border: 2px solid red; */
     margin-top: 4%;
 
 }
 #create{
      margin-left: 30%; 
-     padding: 5px 20px;
-    font-size: 17px;
+     width: 15%;
+     /* padding: 1px 20px; */
+    font-size: 15px;
     background-color: white;
     color: black;
-    border: none;
+    /* border: none; */
     border-radius: 5px;
     cursor: pointer; 
     font-weight: bold;
     font-style: oblique;
+    /* border: 10px solid red; */
 }
 #create:hover{
     background-color: black;
     color: white;
 }
 #enterdid{
+    width: 20%;
     margin-left: 35%;
     padding: 13px;       
     border: none;
@@ -86,4 +90,51 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional shadow */
     overflow-y: auto; /* Add vertical scroll if content overflows */
     padding: 10px; /* Optional padding inside the box */
+}
+form {
+    display: none; /* Initially hidden */
+    position: fixed; /* Position it fixed on the screen */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for perfect centering */
+    color: black;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    z-index: 1000; /* Ensure it appears in front of other content */
+}
+
+form.active {
+    display: block; /* Show the form when the 'active' class is added */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
 }
