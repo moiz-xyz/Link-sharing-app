@@ -49,6 +49,7 @@ send_button.addEventListener("click", () => {
     }
     url_links.value = "";
 });
+
 // Show form and handle password confirmation
 let createId_Btn = document.getElementById("create");
 createId_Btn.addEventListener("click", function () {
@@ -113,14 +114,9 @@ async function submitForm() {
     const idRef = collection(db, "ID's"); 
        try {
       await setDoc(doc(idRef, idField.value), {
-            
-
+            link : url_links.value,
              });
 
-
-      // name: nameField.value,
-      // email: emailField.value,
-    // console.log("Document written with ID: ", docRef.id);
     Swal.fire({
       title: "ID Created",
       text: "The ID was successfully created.",
@@ -138,29 +134,6 @@ async function submitForm() {
 
 let btn = document.getElementById("formbtn");
 btn.addEventListener("click", submitForm);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //  read  data ka function 
 let getid = document.getElementById("enterdid")
@@ -185,15 +158,15 @@ async function readData() {
 
   try {
     const docRef = doc(db, "ID's", documentId);
-    console.log("Document reference:", docRef)
+    // console.log("Document reference:", docRef)
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document exists:", docSnap.exists());
-      console.log("Document data:", docSnap.data());
+      // console.log("Document data:", docSnap.data());
+      coming_links.innerHTML += `${JSON.stringify(docSnap.data())} <br>`;
       Swal.fire({
         title: "Document Found",
-        text: `Data: ${JSON.stringify(docSnap.data())}`,
+        // text: `Data: ${JSON.stringify(docSnap.data())}`,
         icon: "success",
       });
     } else {
@@ -214,11 +187,3 @@ async function readData() {
   }
 }
 
-// async function logAllDocuments() {
-//   const querySnapshot = await getDocs(collection(db, "ID's"));
-//   querySnapshot.forEach((doc) => {
-//     console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
-//   });
-// }
-
-// logAllDocuments();
