@@ -1,5 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { getFirestore,
+   collection, 
+   addDoc ,
+   doc, 
+  getDoc,
+  setDoc
+  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,16 +21,34 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-console.log(db);
+// console.log(db);
 
 
 let form = document.getElementById("idForm");
 const nameField = document.getElementById("name");
 const idField = document.getElementById("id");
 const emailField = document.getElementById("email");
-
 let currentId = "";
+let url_links = document.getElementById("urllinks");
+let send_button = document.getElementById("send");
+let coming_links = document.getElementById("coming_links");
 
+send_button.addEventListener("click", () => {
+    let userInput = url_links.value; 
+    
+    if (userInput.indexOf("http://") === 0 || userInput.indexOf("https://") === 0) {
+        if (userInput.indexOf(".") > -1) {
+          coming_links.innerHTML += `${url_links.value} <br>`;  
+        }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Invalid link entered!",
+      });
+    }
+    url_links.value = "";
+});
 // Show form and handle password confirmation
 let createId_Btn = document.getElementById("create");
 createId_Btn.addEventListener("click", function () {
@@ -54,7 +78,6 @@ async function idcreate() {
     if (result.isConfirmed) {
       const inputValue = result.value.trim();
       if (inputValue === "linksharingapp") {
-        console.log("Password is correct:", inputValue);
         Swal.fire({
           title: "Access Granted!",
           text: "Correct password. Now you can add the ID.",
@@ -62,7 +85,6 @@ async function idcreate() {
         });
         form.style.display = "block"; 
       } else {
-        console.log("Incorrect password:", inputValue);
         Swal.fire({
           title: "Access Denied!",
           text: "Incorrect password. Please try again.",
@@ -88,13 +110,17 @@ async function submitForm() {
     return;
   }
 
-  try {
-    const docRef = await addDoc(collection(db, "ID's"), {
-      name: nameField.value,
-      id: idField.value,
-      email: emailField.value,
-    });
-    console.log("Document written with ID: ", docRef.id);
+    const idRef = collection(db, "ID's"); 
+       try {
+      await setDoc(doc(idRef, idField.value), {
+            
+
+             });
+
+
+      // name: nameField.value,
+      // email: emailField.value,
+    // console.log("Document written with ID: ", docRef.id);
     Swal.fire({
       title: "ID Created",
       text: "The ID was successfully created.",
@@ -112,3 +138,87 @@ async function submitForm() {
 
 let btn = document.getElementById("formbtn");
 btn.addEventListener("click", submitForm);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  read  data ka function 
+let getid = document.getElementById("enterdid")
+getid.addEventListener ("keydown" ,( event) => {
+  if (event.key === "Enter") {
+    // console.log(getid.value);
+    readData ()
+    getid.value = "";
+  }
+})
+async function readData() {
+  const documentId = getid.value.trim(); 
+  if (!documentId) {
+    Swal.fire({
+      title: "Error",
+      text: "Please enter a valid document ID!",
+      icon: "error",
+    });
+    return;
+  }
+// console.log("Document reference:", doc(db, "ID's", documentId));
+
+  try {
+    const docRef = doc(db, "ID's", documentId);
+    console.log("Document reference:", docRef)
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Document exists:", docSnap.exists());
+      console.log("Document data:", docSnap.data());
+      Swal.fire({
+        title: "Document Found",
+        text: `Data: ${JSON.stringify(docSnap.data())}`,
+        icon: "success",
+      });
+    } else {
+      console.log("No such document!");
+      Swal.fire({
+        title: "Error",
+        text: "No document found with the given ID.",
+        icon: "error",
+      });
+    }
+  } catch (e) {
+    console.error("Error fetching document: ", e);
+    Swal.fire({
+      title: "Error",
+      text: "An error occurred while fetching the document.",
+      icon: "error",
+    });
+  }
+}
+
+// async function logAllDocuments() {
+//   const querySnapshot = await getDocs(collection(db, "ID's"));
+//   querySnapshot.forEach((doc) => {
+//     console.log(`Document ID: ${doc.id}, Data: ${JSON.stringify(doc.data())}`);
+//   });
+// }
+
+// logAllDocuments();
