@@ -38,7 +38,7 @@ send_button.addEventListener("click", () => {
     
     if (userInput.indexOf("http://") === 0 || userInput.indexOf("https://") === 0) {
         if (userInput.indexOf(".") > -1) {
-          coming_links.innerHTML += `${url_links.value} <br>`;  
+        coming_links.innerHTML += `<a href="${userInput}" target="_blank">${userInput}</a><br>`; 
         }
     } else {
       Swal.fire({
