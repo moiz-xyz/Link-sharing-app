@@ -1,13 +1,15 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getFirestore,
-   collection, 
-   addDoc ,
-   doc, 
-  getDoc,
-  setDoc
-  } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-// Firebase configuration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAQcTcHavdgP8fG6SEIhOFfn6lyJhRHb7Q",
   authDomain: "link-sharing-app-6a912.firebaseapp.com",
@@ -18,39 +20,137 @@ const firebaseConfig = {
   measurementId: "G-C28X5L9Z51",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 // console.log(db);
-
 
 let form = document.getElementById("idForm");
 const nameField = document.getElementById("name");
 const idField = document.getElementById("id");
 const emailField = document.getElementById("email");
-let currentId = "";
+let currentId = ""; 
 let url_links = document.getElementById("urllinks");
 let send_button = document.getElementById("send");
 let coming_links = document.getElementById("coming_links");
 
-send_button.addEventListener("click", () => {
-    let userInput = url_links.value; 
-    
-    if (userInput.indexOf("http://") === 0 || userInput.indexOf("https://") === 0) {
-        if (userInput.indexOf(".") > -1) {
-        coming_links.innerHTML += `<a href="${userInput}" target="_blank">${userInput}</a><br>`; 
-        }
-    } else {
+let getid = document.getElementById("enterdid");
+getid.addEventListener("keydown", async (event) => {
+  if (event.key === "Enter") {
+    const documentId = getid.value.trim();
+    if (!documentId) {
       Swal.fire({
-        icon: "error",
         title: "Error",
-        text: "Invalid link entered!",
+        text: "Please enter a valid document ID!",
+        icon: "error",
       });
+      return;
     }
-    url_links.value = "";
+
+    currentId = documentId;
+
+    await fetchLinks(currentId);
+  }
 });
 
-// Show form and handle password confirmation
+async function fetchLinks(documentId) {
+  try {
+    const docRef = doc(db, "ID's", documentId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const links = data.links || [];
+
+      // Display the links
+      coming_links.innerHTML = links
+        .map(
+          (link) => `
+            <div>
+              <a href="${link}" target="_blank">${link}</a>
+              <i class="fa-solid fa-trash delete" data-link="${link}"></i>
+            </div>
+          `
+        )
+        .join("");
+
+      // Attach event listeners to delete icons
+      const deleteIcons = document.querySelectorAll(".delete");
+      deleteIcons.forEach((icon) => {
+        icon.addEventListener("click", async (event) => {
+          const linkToDelete = event.target.getAttribute("data-link");
+          await deleteLink(documentId, linkToDelete);
+        });
+      });
+
+      Swal.fire({
+        title: "Document Found",
+        icon: "success",
+      });
+    } else {
+      Swal.fire({
+        title: "Invalid ID",
+        text: "Please put the correct ID or Create it.",
+        icon: "info",
+      });
+    }
+  } catch (e) {
+    console.error("Error fetching document: ", e);
+    Swal.fire({
+      title: "Error",
+      text: "An error occurred while fetching the document.",
+      icon: "error",
+    });
+  }
+}
+// Add a link to the current ID
+send_button.addEventListener("click", async () => {
+  let userInput = url_links.value;
+
+  if (!currentId) {
+    Swal.fire({
+      title: "Error",
+      text: "Please enter an ID first!",
+      icon: "error",
+    });
+    return;
+  }
+
+  if (userInput.indexOf("http://") === 0 || userInput.indexOf("https://") === 0) {
+    if (userInput.indexOf(".") > -1) {
+      try {
+        const docRef = doc(db, "ID's", currentId);
+
+        // Update the document by adding the new link to the "links" array
+        await updateDoc(docRef, {
+          links: arrayUnion(userInput),
+        });
+
+        coming_links.innerHTML += `<a href="${userInput}" target="_blank">${userInput}</a><br>`;
+
+        Swal.fire({
+          title: "Link Added",
+          text: "The link was successfully added.",
+          icon: "success",
+        });
+      } catch (e) {
+        console.error("Error adding link: ", e);
+        Swal.fire({
+          title: "Error",
+          text: "An error occurred while adding the link.",
+          icon: "error",
+        });
+      }
+    }
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Invalid link entered!",
+    });
+  }
+  url_links.value = "";
+});
+
 let createId_Btn = document.getElementById("create");
 createId_Btn.addEventListener("click", function () {
   idcreate();
@@ -84,7 +184,7 @@ async function idcreate() {
           text: "Correct password. Now you can add the ID.",
           icon: "success",
         });
-        form.style.display = "block"; 
+        form.style.display = "block";
       } else {
         Swal.fire({
           title: "Access Denied!",
@@ -101,6 +201,7 @@ async function idcreate() {
     }
   });
 }
+
 async function submitForm() {
   if (!nameField.value || !idField.value || !emailField.value) {
     Swal.fire({
@@ -111,11 +212,11 @@ async function submitForm() {
     return;
   }
 
-    const idRef = collection(db, "ID's"); 
-       try {
-      await setDoc(doc(idRef, idField.value), {
-            link : url_links.value,
-             });
+  const idRef = collection(db, "ID's");
+  try {
+    await setDoc(doc(idRef, idField.value), {
+      links: [], 
+    });
 
     Swal.fire({
       title: "ID Created",
@@ -135,55 +236,37 @@ async function submitForm() {
 let btn = document.getElementById("formbtn");
 btn.addEventListener("click", submitForm);
 
-//  read  data ka function 
-let getid = document.getElementById("enterdid")
-getid.addEventListener ("keydown" ,( event) => {
-  if (event.key === "Enter") {
-    // console.log(getid.value);
-    readData ()
-    getid.value = "";
-  }
-})
-async function readData() {
-  const documentId = getid.value.trim(); 
-  if (!documentId) {
-    Swal.fire({
-      title: "Error",
-      text: "Please enter a valid document ID!",
-      icon: "error",
-    });
-    return;
-  }
-// console.log("Document reference:", doc(db, "ID's", documentId));
-
+async function deleteLink(documentId, linkToDelete) {
   try {
     const docRef = doc(db, "ID's", documentId);
-    // console.log("Document reference:", docRef)
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
-      coming_links.innerHTML += `${JSON.stringify(docSnap.data())} <br>`;
+      let links = docSnap.data().links || [];
+
+      // Remove the specific link
+      links = links.filter((link) => link !== linkToDelete);
+
+      // Update Firestore document
+      await updateDoc(docRef, {
+        links: links,
+      });
+
+      // Re-fetch the updated links
+      await fetchLinks(documentId);
+
       Swal.fire({
-        title: "Document Found",
-        // text: `Data: ${JSON.stringify(docSnap.data())}`,
+        title: "Deleted",
+        text: "The link has been removed successfully.",
         icon: "success",
       });
-    } else {
-      console.log("No such document!");
-      Swal.fire({
-        title: "Error",
-        text: "No document found with the given ID.",
-        icon: "error",
-      });
     }
-  } catch (e) {
-    console.error("Error fetching document: ", e);
+  } catch (error) {
+    console.error("Error deleting link: ", error);
     Swal.fire({
       title: "Error",
-      text: "An error occurred while fetching the document.",
+      text: "An error occurred while deleting the link.",
       icon: "error",
     });
   }
 }
-

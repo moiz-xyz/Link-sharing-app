@@ -19,20 +19,20 @@ body {
     margin-top: 4%;
 
 }
-#create{
-     margin-left: 30%; 
-     width: 15%;
-     /* padding: 1px 20px; */
-    font-size: 15px;
-    background-color: white;
-    color: black;
-    /* border: none; */
-    border-radius: 5px;
-    cursor: pointer; 
-    font-weight: bold;
-    font-style: oblique;
-    /* border: 10px solid red; */
-}
+    #create {
+        margin-left: 30%; 
+        width: 15%;
+        height: 35px; /* Reduce height */
+        font-size: 14px; /* Adjust font size */
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        cursor: pointer; 
+        font-weight: bold;
+        font-style: oblique;
+        padding: 5px 10px; /* Adjust padding */
+    }
+    
 #create:hover{
     background-color: black;
     color: white;
@@ -137,4 +137,21 @@ button {
 
 button:hover {
     background-color: #218838;
+}
+.coming_links{
+    position: relative; /* Ensure positioning works relative to this */
+    padding-right: 30px;
+}
+.coming_links > a {
+    flex: 1; /* Allow the link to take up available space */
+    text-decoration: none;
+    color: blue;
+    word-break: break-all; /* Ensures long links wrap */
+}
+.delete{
+    position: absolute;
+    right: 10px; /* Stick to the right edge */
+    font-size: 18px; /* Adjust size */
+    color: red; /* Highlight */
+    cursor: pointer;
 }
