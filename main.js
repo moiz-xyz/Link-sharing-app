@@ -1,27 +1,18 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
+import { getFirestore ,
+   collection,
   doc,
   getDoc,
   setDoc,
   updateDoc,
   arrayUnion,
+
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAQcTcHavdgP8fG6SEIhOFfn6lyJhRHb7Q",
-  authDomain: "link-sharing-app-6a912.firebaseapp.com",
-  projectId: "link-sharing-app-6a912",
-  storageBucket: "link-sharing-app-6a912.appspot.com",
-  messagingSenderId: "170155224904",
-  appId: "1:170155224904:web:d08601b8b9095f90fbcd7d",
-  measurementId: "G-C28X5L9Z51",
-};
-
+import firebaseConfig from "./keys.js"; 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 // console.log(db);
 
 let form = document.getElementById("idForm");
@@ -61,7 +52,6 @@ async function fetchLinks(documentId) {
       const data = docSnap.data();
       const links = data.links || [];
 
-      // Display the links
       coming_links.innerHTML = links
         .map(
           (link) => `
@@ -73,7 +63,6 @@ async function fetchLinks(documentId) {
         )
         .join("");
 
-      // Attach event listeners to delete icons
       const deleteIcons = document.querySelectorAll(".delete");
       deleteIcons.forEach((icon) => {
         icon.addEventListener("click", async (event) => {
@@ -102,7 +91,6 @@ async function fetchLinks(documentId) {
     });
   }
 }
-// Add a link to the current ID
 send_button.addEventListener("click", async () => {
   let userInput = url_links.value;
 
@@ -120,7 +108,6 @@ send_button.addEventListener("click", async () => {
       try {
         const docRef = doc(db, "ID's", currentId);
 
-        // Update the document by adding the new link to the "links" array
         await updateDoc(docRef, {
           links: arrayUnion(userInput),
         });
@@ -244,15 +231,12 @@ async function deleteLink(documentId, linkToDelete) {
     if (docSnap.exists()) {
       let links = docSnap.data().links || [];
 
-      // Remove the specific link
       links = links.filter((link) => link !== linkToDelete);
 
-      // Update Firestore document
       await updateDoc(docRef, {
         links: links,
       });
 
-      // Re-fetch the updated links
       await fetchLinks(documentId);
 
       Swal.fire({
